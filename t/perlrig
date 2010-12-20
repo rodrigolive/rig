@@ -33,11 +33,15 @@ _t_also:
   use:
     - Benchmark:
        - timethis
+       - timeit
 _t_also2:
   use:
     - Benchmark:
        - cmpthese
 _t_also3:
   use:
+    - List::Util:
+       - first
     - Benchmark:
        - timethese
+       - countit

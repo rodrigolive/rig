@@ -1,5 +1,5 @@
 BEGIN {
-    sub rig::task::t_imports::use {
+    sub rig::task::t_imports::rig {
         { use => [
             { 'List::Util'=> [ 'sum','max' ] },
             { 'List::MoreUtils'=> [ 'any','firstval' ] }
@@ -8,7 +8,12 @@ BEGIN {
 }
 
 use Test::More;
-use rig -file => 't/.perlrig';
+
+eval { require List::Util };
+plan skip_all => "List::Util not installed" if $@; 
+
+use FindBin '$Bin';
+use rig -file => $Bin . '/perlrig';
 use rig 't_imports';
 
 is( sum(1..10), 55, 'sum' );

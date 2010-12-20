@@ -1,4 +1,7 @@
-BEGIN { $ENV{PERLRIG_FILE} = 't/.perlrig' }
+use FindBin '$Bin';
+BEGIN {
+	$ENV{PERLRIG_FILE} = $Bin . '/perlrig'
+}
 
 use Test::More;
 {

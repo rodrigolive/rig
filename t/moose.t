@@ -1,17 +1,18 @@
+use Test::More;
+use strict;
+
+eval { require Moose };
+plan skip_all => "Moose not installed" if $@; 
+
 BEGIN {
-    sub rig::task::t_moose::use {
-        { use => [
-            'Moose', 'MooseX::HasDefaults::RO', 
-        ]
-        }
+    sub rig::task::t_moose::rig {
+        { use => [ 'Moose', ] }
     };
 }
 
-use Test::More;
-{ package TMoose;
-use rig 't_moose';
-has 'name' => (  isa=>'Str' );
-
+package TMoose; {
+	use rig 't_moose';
+	has 'name' => ( is=>'rw', isa=>'Str' );
 }
 
 package main;

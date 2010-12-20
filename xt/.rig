@@ -1,0 +1,27 @@
+moose:
+    - Moose 0.92
+    - Moose::Autobox
+    - autodie
+    - Method::Signatures
+    - Try::Tiny
+goo:
+    - strict
+    - warnings
+    - doo
+    - Data::Dumper
+    - feature:
+        - say
+        - switch
+    - Data::Alias
+    - Data::Alias
+    - autodie
+bam:
+    - List::Util:
+        - first
+        - max
+        - min
+    - Scalar::Util:
+        - refaddr
+    - Carp:
+        - cluck
+        - croak

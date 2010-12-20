@@ -1,6 +1,19 @@
-use Test::More tests => 2;                      # last test to print
+use strict;
+use warnings;
+no strict 'refs';
+use Test::More;
 
-use rig -file => 't/.perlrig';
+eval { require List::Util };
+plan skip_all => "List::Util not installed" if $@; 
+
+use FindBin '$Bin';
+use rig -file => $Bin . '/perlrig';
 use rig '_t_also';
-ok( ref timethis( 10, sub{ '' }), 'also 1' );
-ok( ref timethese( 10, sub{ '' }), 'also 1' );
+my %sym = %{ \%main:: };
+ok( exists $sym{countit}, 'countit also' );
+ok( exists $sym{first}, 'first also' );
+ok( exists $sym{cmpthese}, 'cmpthese also' );
+ok( ref timethese( 10, { a=>sub{ '' } }), 'also 2' );
+is( ( first { defined } ('a','b') ), 'a', 'also first' );
+
+done_testing;

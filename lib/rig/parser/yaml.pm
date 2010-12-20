@@ -9,7 +9,8 @@ sub parse {
     my $self = shift;
     my $path = $CURR_RC_FILE = shift || $self->_find_first_rig_file();
     $rig_files{$path} && return $rig_files{$path}; # cache?
-    confess 'No .perlrig file found' unless $path;
+    return undef unless $path;
+    #confess 'No .perlrig file found' unless $path;
     return $rig_files{$path} = $self->parse_file( $path );
 }
 
@@ -49,7 +50,7 @@ sub _has_rigfile_tasks {
 
 sub _find_first_rig_file {
     my $self = shift;
-    return $ENV{PERLRIG_FILE} if -e $ENV{PERLRIG_FILE};
+    return $ENV{PERLRIG_FILE} if defined $ENV{PERLRIG_FILE} && -e $ENV{PERLRIG_FILE};
     my $path;
     # search path
     my $current = Cwd::getcwd;
@@ -62,3 +63,27 @@ sub _find_first_rig_file {
     # not in path, or no path specified
 }
 1;
+
+=head1 NAME
+
+rig::parser::yaml - YAML parser for rig
+
+=head1 DESCRIPTION
+
+This is used by the base engine to find and parse .perlrig YAML files.
+
+=head1 METHODS
+
+=head2 parse
+
+Main method, called by C<rig> to parse a file.
+
+=head2 file
+
+Returns the current loaded file. 
+
+=head2 parse_file
+
+Loads a YAML file using L<YAML::XS>.
+
+=cut 

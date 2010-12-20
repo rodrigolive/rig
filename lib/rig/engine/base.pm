@@ -1,5 +1,6 @@
 package rig::engine::base;
 use strict;
+use warnings;
 use Carp;
 use YAML::XS;
 use Hook::LexWrap;
@@ -15,9 +16,9 @@ sub new {
 
 sub import {
     my ($self, @tasks) = @_;
-	print Dump $self;
+	#print Dump $self;
     my $pkg = caller;
-    print "===== $pkg\n";
+    #print "===== $pkg\n";
     my $import;
     ( $import, @tasks )= $self->build_import( @tasks );
 
@@ -25,6 +26,7 @@ sub import {
     #print "IMP=" . Dump $import;
 
     my @module_list = map { @{ $import->{$_}->{'use'} || [] } } @tasks;
+	@module_list = $self->_group_modules( @module_list );
     my ($first_module, $last, @gotos);
 
     for my $module ( @module_list ) {
@@ -54,6 +56,7 @@ sub import {
             my $module_args_str = "'".join(q{','}, @module_args)."'"
                 if @module_args > 0;
             #print "   use $name $module_args_str\n";
+			$module_args_str ||= '';
             eval "package $pkg; use $name $module_args_str;"; # for things like Carp
 		}
 		# modules with a + in front, at the user's request
@@ -69,22 +72,12 @@ sub import {
 			push @gotos, [ $name, $import_sub, \@module_args ];
         }
     }
-	
-	# group duplicates
-	my %grouped;
-	for my $goto_data ( @gotos ) {
-		my ($name, $import_sub, $margs ) = @{ $goto_data };
-		my @module_args = @$margs;
-		print "margs= $name, $import_sub =>". join',',@module_args;
-		print "\n";
-		push @{ $grouped{ $name . '%' . $import_sub } }, @$margs;
-	}
 
 	# wire up the goto chain
-	for my $goto_data ( keys %grouped ) {
+	for my $goto_data ( @gotos ) {
         no strict 'refs';
-		my ($name, $import_sub ) = split /\%/,$goto_data;
-		my @module_args = @{ $grouped{$goto_data} };
+		my ($name, $import_sub, $margs ) = @{ $goto_data };
+		my @module_args = @$margs;
 		if( $last ) {
 			unless( *{$last} ) {
 				#print "no code for $last\n";
@@ -96,7 +89,8 @@ sub import {
 				#print "    wrap $last\n";
 				wrap $restore,
 					post=>sub {
-						print " - post run $import_sub, restore $restore: caller:" . caller . "\n";
+						#print " - post run $import_sub, restore $restore: caller:" . caller . "\n";
+						no warnings;  # avoid redefined warnings TODO better control of redefines
 						*{$restore}=$original if $restore;
 						@_=($name, @module_args);
 						#print "   goto $import_sub( @module_args ) \n";
@@ -108,14 +102,13 @@ sub import {
     $last = undef;
 
 	# fire up the chain, if any
-	print "======" . YAML::Dump( $first_module ) .  "\n";
     if( $first_module ) {
         my @module_args = ref $first_module->{args} eq 'ARRAY' ? @{$first_module->{args}} : ();
         my $first_import = $first_module->{name}."::import";
         my $can_import = defined &{$first_import};
         return unless $can_import;
         @_=($first_module->{name}, @module_args);
-        print ">>first import $first_import @_\n";
+        #print ">>first import $first_import @_\n";
         goto &$first_import;
     }
 }
@@ -255,7 +248,7 @@ sub _load_task_module {
     my $self = shift;
     my $task = shift;
     my $module = 'rig::task::' . $task;
-    my $load_sub = $module . '::use';
+    my $load_sub = $module . '::rig';
     no strict 'refs';
     unless( defined &{$load_sub} ) {
         eval "require $module"
@@ -274,7 +267,7 @@ sub _check_versions {
         if version->parse($current) < version->parse($version); 
 }
 
-sub unimport {
+sub _unimport {
     my ($class, @args) = @_;
     my $pkg = caller;
     #print "$pkg\n";
@@ -326,5 +319,66 @@ sub unimport {
         goto &$first_import;
     }
 }
+
+sub _group_modules {
+	my $self = shift;
+	my %ret;
+	for my $module ( @_ ) {
+		my $name = delete $module->{name};
+		$ret{$name}{name} = $name;
+		# args
+		push @{ $ret{ $name }{args} }, @{$module->{args} || [] };
+		# alias
+		for my $alias ( keys %{ $module->{alias} } ) {
+			$ret{ $name }{alias}{ $alias } = $module->{alias}->{$alias};
+		}
+		# version
+		$ret{$name}{version} = $module->{version}
+			if ( defined $module->{version} && defined $ret{$name}{version} && $module->{version} > $ret{$name}{version} ) 
+				|| ! defined $ret{$name}{version}; 
+		# optional
+		$ret{$name}{optional} = $module->{optional}
+			if ( defined $module->{optional} && defined $ret{$name}{optional} && $module->{optional} > $ret{$name}{optional} )
+				|| ! defined $ret{$name}{optional}; 
+
+	}
+	#print YAML::Dump \%ret;
+	return map { $ret{$_} } keys %ret;
+}
+
 1;
+
+=head1 NAME
+
+rig::engine::base - Default engine for rig
+
+=head1 DESCRIPTION
+
+Here is were all the dirty work is done. 
+
+No moving parts inside. Instantiate this class if needed. 
+
+=head1 METHODS
+
+=head2 import
+
+Imports modules into the caller package.
+
+=head2 build_import
+
+Creates the import sequence.
+
+=head2 new
+
+Creates a new engine instance.
+
+=head2 section_also
+
+Handles the 'also' section.
+
+=head2 section_use
+
+Handles the 'use' section.
+
+=cut 
 

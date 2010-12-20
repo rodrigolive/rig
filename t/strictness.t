@@ -1,8 +1,11 @@
 BEGIN {
-    sub rig::task::strictness::use {
-        { use => [
-            'strict', { 'warnings'=> [ 'FATAL','all' ] }
-        ] }
+    sub rig::task::strictness::rig {
+        {
+			use => [
+				'strict',
+				{ 'warnings'=> [ 'FATAL','all' ] }
+			],
+		}
     };
 }
 package main;

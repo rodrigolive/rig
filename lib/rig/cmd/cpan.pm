@@ -14,15 +14,35 @@ sub run {
         for my $module ( @{ $data->{$task} } ) {
             ref $module eq 'HASH' and $module = (keys %$module)[0];
             print "Installing $module...\n";
-            $self->install_module($module);
+            $self->_install_module($module);
         }
     }
 }
 
-sub install_module {
+sub _install_module {
     my $self = shift;
     my $module = shift;
     CPAN::Shell->install( $module );
 }
 
 1;
+
+=head1 NAME
+
+rig::cmd::cpan - Command to install a rig with the cpan command line
+
+=head1 SYNOPSYS
+
+	rigup cpan
+
+=head1 DESCRIPTION
+
+This is quite experimental yet.
+
+=head1 METHODS
+
+=head2 run
+
+Calls the CPAN shell to install rig modules. 
+
+=cut 
