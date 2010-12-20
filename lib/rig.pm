@@ -54,6 +54,8 @@ sub _setup_parser {
     eval "require $opts{parser};" or croak "rig: " . $@;
 }
 
+1;
+
 =head1 NAME
 
 rig - Bundle up your favorite modules and imports into one call
@@ -145,15 +147,48 @@ statements.
 				- ...
 		also: <task2> [, <task3> ... ]
 
-=head3 use
+=head3 use section
 
 * Lists modules to be used. 
 * Checks module versions.
 * Lists imports.
 
-=head3 also
+=head3 also section
 
 Used to bundle tasks into each other.
+
+=head3 Examples
+
+	moose:
+		use:
+		   - Moose 0.92
+		   - Moose::Autobox
+		   - autodie
+		   - Method::Signatures
+		   - Try::Tiny
+	goo:
+		use:
+		   - strict
+		   - warnings
+		   - doo
+		   - Data::Dumper
+		   - feature:
+			   - say
+			   - switch
+		   - Data::Alias
+		   - Data::Alias
+		   - autodie
+	bam:
+		use:
+		   - List::Util:
+			   - first
+			   - max
+			   - min
+		   - Scalar::Util:
+		   - refaddr
+		   - Carp:
+			   - cluck
+			   - croak
 
 =head1 The .perlrig file
 
@@ -215,4 +250,3 @@ This is the recommended way to ship a rig with your distribution.
 
 =cut
 
-1;
