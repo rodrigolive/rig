@@ -10,13 +10,13 @@ use File::HomeDir;
 use File::Spec;
 
 sub new {
-	my ($class,%args)=@_;
-	bless \%args, $class;
+    my ($class,%args)=@_;
+    bless \%args, $class;
 }
 
 sub import {
     my ($self, @tasks) = @_;
-	#print Dump $self;
+    #print Dump $self;
     my $pkg = caller;
     #print "===== $pkg\n";
     my $import;
@@ -26,17 +26,17 @@ sub import {
     #print "IMP=" . Dump $import;
 
     my @module_list = map { @{ $import->{$_}->{'use'} || [] } } @tasks;
-	@module_list = $self->_group_modules( @module_list );
+    @module_list = $self->_group_modules( @module_list );
     my ($first_module, $last, @gotos);
 
     for my $module ( @module_list ) {
         no strict 'refs';
         my $name = $module->{name};
-		my $direct_import = 0;
-		if( $name =~ /^\+(.+)$/ ) {
-			$name = $1;
-			$direct_import = 1;
-		}
+        my $direct_import = 0;
+        if( $name =~ /^\+(.+)$/ ) {
+            $name = $1;
+            $direct_import = 1;
+        }
         my $version = $module->{version};
         my $optional = $module->{optional};
         my @module_args = ref $module->{args} eq 'ARRAY' ? @{$module->{args}} : ();
@@ -51,57 +51,57 @@ sub import {
         $self->_check_versions( $name, $version );
 
         my $can_import = defined &{$name.'::import'};
-		# some modules you just can't reach:
+        # some modules you just can't reach:
         if( !$can_import && $name->isa("Exporter") ) {
             my $module_args_str = "'".join(q{','}, @module_args)."'"
                 if @module_args > 0;
             #print "   use $name $module_args_str\n";
-			$module_args_str ||= '';
+            $module_args_str ||= '';
             eval "package $pkg; use $name $module_args_str;"; # for things like Carp
-		}
-		# modules with a + in front, at the user's request
-		elsif( $direct_import ) {
-			#print "  direct import for $name\n";
-			$name->import(@module_args);
         }
-		# default goto import method, pushed for later
-		else {
-			#print "  push goto import for $name\n";
+        # modules with a + in front, at the user's request
+        elsif( $direct_import ) {
+            #print "  direct import for $name\n";
+            $name->import(@module_args);
+        }
+        # default goto import method, pushed for later
+        else {
+            #print "  push goto import for $name\n";
             $first_module ||= $module;
             my $import_sub = $name . "::import";
-			push @gotos, [ $name, $import_sub, \@module_args ];
+            push @gotos, [ $name, $import_sub, \@module_args ];
         }
     }
 
-	# wire up the goto chain
-	for my $goto_data ( @gotos ) {
+    # wire up the goto chain
+    for my $goto_data ( @gotos ) {
         no strict 'refs';
-		my ($name, $import_sub, $margs ) = @{ $goto_data };
-		my @module_args = @$margs;
-		if( $last ) {
-			unless( *{$last} ) {
-				#print "no code for $last\n";
-			} else {
-				my $restore = $last;
-				# save original
-				my $original = *$restore{CODE};;
-				# wrap the import
-				#print "    wrap $last\n";
-				wrap $restore,
-					post=>sub {
-						#print " - post run $import_sub, restore $restore: caller:" . caller . "\n";
-						no warnings;  # avoid redefined warnings TODO better control of redefines
-						*{$restore}=$original if $restore;
-						@_=($name, @module_args);
-						#print "   goto $import_sub( @module_args ) \n";
-						goto &$import_sub };
-			}
-		}
-		$last = $import_sub;
-	}
+        my ($name, $import_sub, $margs ) = @{ $goto_data };
+        my @module_args = @$margs;
+        if( $last ) {
+            unless( *{$last} ) {
+                #print "no code for $last\n";
+            } else {
+                my $restore = $last;
+                # save original
+                my $original = *$restore{CODE};;
+                # wrap the import
+                #print "    wrap $last\n";
+                wrap $restore,
+                    post=>sub {
+                        #print " - post run $import_sub, restore $restore: caller:" . caller . "\n";
+                        no warnings;  # avoid redefined warnings TODO better control of redefines
+                        *{$restore}=$original if $restore;
+                        @_=($name, @module_args);
+                        #print "   goto $import_sub( @module_args ) \n";
+                        goto &$import_sub };
+            }
+        }
+        $last = $import_sub;
+    }
     $last = undef;
 
-	# fire up the chain, if any
+    # fire up the chain, if any
     if( $first_module ) {
         my @module_args = ref $first_module->{args} eq 'ARRAY' ? @{$first_module->{args}} : ();
         my $first_import = $first_module->{name}."::import";
@@ -115,7 +115,7 @@ sub import {
 
 sub build_import {
     my ($self,@tasks)=@_;
-	my $parser = $self->{parser} or croak "rig: missing a parser";
+    my $parser = $self->{parser} or croak "rig: missing a parser";
     #my $profile = $self->_has_rigfile_tasks(@tasks) ? $self->parse() : {};
     my $profile = $parser->parse( $self->{file} ) || {};
     my $ret = {};
@@ -321,29 +321,29 @@ sub _unimport {
 }
 
 sub _group_modules {
-	my $self = shift;
-	my %ret;
-	for my $module ( @_ ) {
-		my $name = delete $module->{name};
-		$ret{$name}{name} = $name;
-		# args
-		push @{ $ret{ $name }{args} }, @{$module->{args} || [] };
-		# alias
-		for my $alias ( keys %{ $module->{alias} } ) {
-			$ret{ $name }{alias}{ $alias } = $module->{alias}->{$alias};
-		}
-		# version
-		$ret{$name}{version} = $module->{version}
-			if ( defined $module->{version} && defined $ret{$name}{version} && $module->{version} > $ret{$name}{version} ) 
-				|| ! defined $ret{$name}{version}; 
-		# optional
-		$ret{$name}{optional} = $module->{optional}
-			if ( defined $module->{optional} && defined $ret{$name}{optional} && $module->{optional} > $ret{$name}{optional} )
-				|| ! defined $ret{$name}{optional}; 
+    my $self = shift;
+    my %ret;
+    for my $module ( @_ ) {
+        my $name = delete $module->{name};
+        $ret{$name}{name} = $name;
+        # args
+        push @{ $ret{ $name }{args} }, @{$module->{args} || [] };
+        # alias
+        for my $alias ( keys %{ $module->{alias} } ) {
+            $ret{ $name }{alias}{ $alias } = $module->{alias}->{$alias};
+        }
+        # version
+        $ret{$name}{version} = $module->{version}
+            if ( defined $module->{version} && defined $ret{$name}{version} && $module->{version} > $ret{$name}{version} ) 
+                || ! defined $ret{$name}{version}; 
+        # optional
+        $ret{$name}{optional} = $module->{optional}
+            if ( defined $module->{optional} && defined $ret{$name}{optional} && $module->{optional} > $ret{$name}{optional} )
+                || ! defined $ret{$name}{optional}; 
 
-	}
-	#print YAML::Dump \%ret;
-	return map { $ret{$_} } keys %ret;
+    }
+    #print YAML::Dump \%ret;
+    return map { $ret{$_} } keys %ret;
 }
 
 1;
