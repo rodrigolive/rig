@@ -197,7 +197,7 @@ Used to bundle tasks into each other.
             - max
             - min
          - Scalar::Util:
-         - refaddr
+            - refaddr
          - Carp:
             - cluck
             - croak
