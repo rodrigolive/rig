@@ -70,11 +70,11 @@ In your C</home/user/.perlrig> yaml file:
 				- max
 			- Data::Dumper
 
-Then in your code:
+Back in your code:
 
 	use rig common; # same as use Data::Dumper + use List::Utils qw/first max/
 
-	# now use it
+	# just do it
 	print first { $_ > 10 } @ary; # from List::Utils;
 	print Dumper $foo;  # from Data::Dumper
 
@@ -170,12 +170,10 @@ Used to bundle tasks into each other.
 		use:
 		   - strict
 		   - warnings
-		   - doo
 		   - Data::Dumper
 		   - feature:
 			   - say
 			   - switch
-		   - Data::Alias
 		   - Data::Alias
 		   - autodie
 	bam:

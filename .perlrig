@@ -9,7 +9,6 @@ goo:
     use:
        - strict
        - warnings
-       - doo
        - Data::Dumper
        - feature:
            - say
