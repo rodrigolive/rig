@@ -5,7 +5,7 @@ sub run {
     require rig;
     my $engine_import = rig->_setup_engine;
     rig->_setup_parser;
-    &$engine_import();
+    &$engine_import('rig::engine::base');
 }
 
 1;
