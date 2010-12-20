@@ -59,6 +59,7 @@ sub _setup_parser {
 =head1 NAME
 
 rig - Bundle up your favorite modules and imports into one call
+
 =head1 SYNOPSIS
 
 In your C</home/user/.perlrig> yaml file:
@@ -78,7 +79,6 @@ Back in your code:
 	print first { $_ > 10 } @ary; # from List::Utils;
 	print Dumper $foo;  # from Data::Dumper
 
-
 =head1 DESCRIPTION
 
 This module allows you to organize and bundle your favorite modules, thus reducing 
@@ -87,8 +87,17 @@ imports by default.
 
 You can rig your bundles in 2 places:
 
-* A .rig file in your home or current directory.
-* Packages undeneath the rig::bundle::<bundle_name>
+=over
+
+=item * 
+
+A .rig file in your home or current directory.
+
+=item * 
+
+Packages undeneath the rig::bundle::<bundle_name>
+
+=back
 
 =head1 IMPLEMENTATION
 
@@ -149,9 +158,21 @@ statements.
 
 =head3 use section
 
-* Lists modules to be used. 
-* Checks module versions.
-* Lists imports.
+=over
+
+=item *
+
+Lists modules to be used. 
+
+=item *
+
+Checks module versions.
+
+=item *
+
+Lists imports.
+
+=back
 
 =head3 also section
 
@@ -226,25 +247,46 @@ to ship them as part of the C<rig::task::> namespace.
 	package rig::task::myfav;
 
 	sub rig {
-        {
+        return {
 			use => [
 				'strict',
 				{ 'warnings'=> [ 'FATAL','all' ] }
 			],
 			also => 'somethingelse',
-		}
+		};
 	}
 
 This is the recommended way to ship a rig with your distribution. 
 
 =head1 TODO
 
-* Straighten out and optimize internals.
-* Test many more modules for edge cases.
-* More verbs besides C<use> and C<also>, such as require, etc.
-* A cookbook of some sort, with everyday examples.
-* More tests.
-* Fix load sequence.
+=over
+
+=item * 
+
+Straighten out and optimize internals.
+
+=item * 
+
+Test many more modules for edge cases.
+
+=item * 
+
+More verbs besides C<use> and C<also>, such as require, etc.
+
+=item * 
+
+A cookbook of some sort, with everyday examples.
+
+=item * 
+
+More tests.
+
+=item * 
+
+Fix load sequence.
+
+=back 
 
 =cut
 
