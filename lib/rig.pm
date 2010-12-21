@@ -143,6 +143,7 @@ loading modules more generic and effective.
    <task>:
       use:
          - <module> [min_version]
+         - +<module> 
          - <module>:
             - <import1>
             - <import2>
@@ -155,7 +156,7 @@ loading modules more generic and effective.
 
 =item *
 
-Lists modules to be used. 
+Lists modules to be C<use>d. 
 
 =item *
 
@@ -166,6 +167,15 @@ Checks module versions.
 Lists imports.
 
 =back
+
+By default, modules are imported by calling C<import>. Alternatively,
+a plus sign C<+> can be used in front of the module to force
+it to be loaded using the C<eval> method, as such:
+
+    eval "package <your_package>; use <module>;"
+
+This may be useful to workaround issues with using import when 
+none is available, or things are just not working as expected.
 
 =head3 also section
 
@@ -288,6 +298,14 @@ statements.
 =head1 TODO
 
 =over
+
+=item * 
+
+Create a class to hold the perlrig definition.
+
+=item *
+
+Use L<Config::Any> or similar for more agnostic and advanced file loading.
 
 =item * 
 
