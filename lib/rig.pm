@@ -107,7 +107,7 @@ A file called C<.perlrig> in your home or current working directory.
 
 =item * 
 
-Packages undeneath the rig::task::<rig_task_name>
+Packages undeneath the C<rig::task::<rig_task_name>>, for better portability.
 
 =back
 
@@ -335,8 +335,9 @@ Fix load sequence.
 
 =head1 SEE ALSO
 
-L<Toolkit>
-L<ToolSet>
+L<Toolkit> - uses filters to accomplish this.
+
+L<ToolSet> - uses 'base' to inherit from modules. 
 
 =cut
 
