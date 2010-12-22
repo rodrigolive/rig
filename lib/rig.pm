@@ -61,7 +61,7 @@ sub _setup_parser {
 
 =head1 NAME
 
-rig - Bundle up your favorite modules and imports into one call
+rig - import groups of favorite/related modules with a single expression
 
 =head1 SYNOPSIS
 
