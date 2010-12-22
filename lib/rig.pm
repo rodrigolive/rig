@@ -295,6 +295,16 @@ will probably be fixed, as the author's intention is to load modules
 following the order set by the user in the C<.perlrig> and C<use rig>
 statements.
 
+=head1 ON NAMING THIS PACKAGE
+
+The authors feel that C<rig> is a short name that is good for one-liners.
+It's lowercase because we feel it's a pragma-like module that augments
+the functionality of C<use>. 
+But C<rig> is a unique enough name as to avoid
+clashing with future Perl pragmas. 
+
+We're sorry if it hurts anyone's lowercase sensibility.
+
 =head1 TODO
 
 =over
@@ -335,9 +345,10 @@ Fix load sequence.
 
 =head1 SEE ALSO
 
-L<Toolkit> - uses filters to accomplish this.
+L<Toolkit> - uses filters and C<AUTOLOAD> to accomplish its import magic.
 
-L<ToolSet> - uses 'base' to inherit from modules. 
+L<ToolSet> - employs C<use base> and C<package ...; eval ...>.
 
 =cut
+
 
