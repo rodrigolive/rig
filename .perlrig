@@ -23,7 +23,7 @@ bam:
            - max
            - min
        - Scalar::Util:
-       - refaddr
+           - refaddr
        - Carp:
            - cluck
            - croak
