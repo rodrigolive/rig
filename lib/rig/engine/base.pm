@@ -261,7 +261,6 @@ sub _check_versions {
     my ($self, $name, $version) = @_;
     no strict q/refs/;
     my $current = ${$name.'::VERSION'}; 
-    #print "----------checking $current x $version.-----------\n";
     return unless defined $current && defined $version;
     croak "rig: version error: required module $name $version, but found version $current"
         if version->parse($current) < version->parse($version); 

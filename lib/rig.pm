@@ -28,7 +28,7 @@ sub import {
 sub _process_pragmas {
     my $class = shift;
     my @args;
-    while ( my $_ = shift ) {
+    while ( local $_ = shift ) {
         if (/^-(.+)$/) {
 
             # process pragma
