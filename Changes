@@ -1,3 +1,7 @@
+0.01_04 Thu Dec 30 09:50:22 CET 2010
+	* Fix failing tests
+    * Pod
+
 0.01_03 Tue Dec 21 02:05:34 CET 2010
 	* Pod 
 
