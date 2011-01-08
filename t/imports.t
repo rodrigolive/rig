@@ -2,7 +2,6 @@ BEGIN {
     sub rig::task::t_imports::rig {
         { use => [
             { 'List::Util'=> [ 'sum','max' ] },
-            { 'List::MoreUtils'=> [ 'any','firstval' ] }
         ] }
     };
 }
@@ -18,11 +17,5 @@ use rig 't_imports';
 
 is( sum(1..10), 55, 'sum' );
 is( max(1..10), 10, 'max' );
-
-eval { require List::MoreUtils };
-plan skip_all => "List::MoreUtils not installed" if $@; 
-
-is( do { firstval { $_ eq 10 } 1..20 } , 10, 'firstval' );
-ok( do { any { $_ eq 10 } 1..20 }, 'any' );
 
 done_testing;

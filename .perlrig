@@ -1,3 +1,10 @@
+modernity:
+    use:
+       - strict
+       - warnings
+       - feature:
+           - say
+           - switch
 moose:
     use:
        - Moose 0.92
@@ -10,14 +17,13 @@ goo:
        - strict
        - warnings
        - Data::Dumper
-       - feature:
-           - say
-           - switch
        - Data::Alias
        - Data::Alias
        - autodie
+    also: modernity
 bam:
     use:
+       - XXX
        - List::Util:
            - first
            - max

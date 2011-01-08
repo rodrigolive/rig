@@ -67,7 +67,7 @@ rig - import groups of favorite/related modules with a single expression
 
 In your C</home/user/.perlrig> yaml file:
 
-   common:
+   favorite:
       use:
          - strict
          - warnings
@@ -78,7 +78,7 @@ In your C</home/user/.perlrig> yaml file:
 
 Back in your code:
 
-   use rig common;
+   use rig favorite;
 
    # same as:
    #   use strict;
@@ -86,7 +86,7 @@ Back in your code:
    #   use List::Util qw/first max/;
    #   use Data::Dumper;
 
-   # now, have a ball:
+   # now have a ball:
 
    print first { $_ > 10 } @ary; # from List::Utils;
    print Dumper $foo;  # from Data::Dumper
@@ -117,24 +117,25 @@ This module uses lots of internal C<goto>s to trick modules to think they're bei
 loaded by the original caller, and not by C<rig> itself. It also hooks into C<import> to keep 
 modules loading after a C<goto>.  
 
-Modules that don't have an C<import()> method, are instead C<eval>led into the caller's package. 
+Modules that don't have an C<import()> method are instead C<eval>led into the caller's package. 
 
 This is somewhat hacky, there are probably better ways of achieving the same results.
 We're open to suggestions on how to make loading modules more generic and effective.
+Just fork me on Github!
 
 =head1 USAGE
 
 =head2 Code
 
     use rig -file   => '/tmp/.rig';           # explicitly use a file
-    use rig -engine => 'base'; 
+    use rig -engine => 'base';                # chooses the current engine
     use rig -path   => qw(. /home/me /opt);   # not implemented yet
-    use rig -jit    => 1;                     # not implemented yet
 
     use rig moose, strictness, modernity;
 
-    use rig 'kensho';
-    use rig 'kensho::strictive';    # looks for rig::task::kensho::strictive
+    use rig 'kensho';            # loads a rig called kensho
+    use rig ':kensho';           # skips files, goes straight to rig::task::kensho
+    use rig 'kensho::strictive'; # skips files, uses rig::task::kensho::strictive
     use rig 'signes';
 
 =head2 C<.perlrig> YAML structure
@@ -167,14 +168,16 @@ Lists exports (optional).
 
 =back
 
-By default, modules are imported by calling C<import>. Alternatively,
-a plus sign C<+> can be used in front of the module to force
+By default, modules in your rig are imported by calling C<import>.
+
+Alternatively, a plus sign C<+> can be used in front of the module to force
 it to be loaded using the C<eval> method, as such:
 
     eval "package <your_package>; use <module>;"
 
 This may be useful to workaround issues with using import when 
-none is available, or things are just not working as expected.
+none is available and C<rig> fails to detect a missing import method,
+or things are just not working as expected.
 
 =head3 also section
 
@@ -182,9 +185,16 @@ Used to bundle tasks into each other.
 
 =head3 Examples
 
+   modernity:
+      use:
+         - strict 
+         - warnings
+         - feature:
+            - say
+            - switch
    moose:
       use:
-         - Moose 0.92
+         - Moose 1.0
          - Moose::Autobox
          - autodie
          - Method::Signatures
@@ -194,11 +204,9 @@ Used to bundle tasks into each other.
          - strict
          - warnings
          - Data::Dumper
-         - feature:
-            - say
-            - switch
          - Data::Alias
          - autodie
+      also: modernity
    bam:
       use:
          - List::Util:
