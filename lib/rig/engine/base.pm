@@ -32,11 +32,9 @@ sub import {
     for my $module ( @module_list ) {
         no strict 'refs';
         my $name = $module->{name};
-        my $direct_import = 0;
-        if( $name =~ /^\+(.+)$/ ) {
-            $name = $1;
-            $direct_import = 1;
-        }
+        my $direct_import = do {
+            $name =~ /^\+(.+)$/ and $name=$1;
+        };
         my $version = $module->{version};
         my $optional = $module->{optional};
         my @module_args = ref $module->{args} eq 'ARRAY' ? @{$module->{args}} : ();
@@ -46,13 +44,13 @@ sub import {
         #print " --require $name (version=$version, optional=$optional)\n";
         eval "require $name" or do {
             $optional and next;
-            confess "rig: $name: $@";
+            carp "rig: $name: $@";
         };
         $self->_check_versions( $name, $version );
 
         my $can_import = defined &{$name.'::import'};
         # some modules you just can't reach:
-        if( !$can_import && $name->isa("Exporter") ) {
+        if( !$can_import ) {
             my $module_args_str = "'".join(q{','}, @module_args)."'"
                 if @module_args > 0;
             #print "   use $name $module_args_str\n";

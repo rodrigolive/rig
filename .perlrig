@@ -33,3 +33,11 @@ bam:
        - Carp:
            - cluck
            - croak
+io:
+   use:
+      - IO::All
+      - Acme::Dot
+      - autobox::Core
+      - Carp:
+         - confess
+

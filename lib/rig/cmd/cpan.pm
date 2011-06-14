@@ -2,6 +2,7 @@ package rig::cmd::cpan;
 use strict;
 use CPAN;
 use CPAN::Shell;
+use base 'rig::CmdBase';
 use rig '-load';
 
 sub run {
