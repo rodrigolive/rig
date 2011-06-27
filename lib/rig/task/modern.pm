@@ -9,4 +9,18 @@ sub rig {
    };
 }
 
+=head1 NAME
+
+rig::task::modern - standard modern Perl
+
+=head1 DESCRIPTION
+
+A basic Modern Perl setting:
+
+
+    use strict;
+    use warnings qw/FATAL all/;
+
+=cut
+
 1;

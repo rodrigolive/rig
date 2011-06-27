@@ -111,11 +111,24 @@ sub import {
     }
 }
 
+sub _has_rigfile_tasks {
+    my ($self, $tasks ) = @_;
+    my $need_to_parse = 0;  
+    my @newtasks = map {
+        unless( s/^\:// ) {
+            $need_to_parse = 1;
+        }
+        $_;
+    } @{ $tasks || [] };
+    $tasks = \@newtasks;
+    return $need_to_parse;
+}
+
 sub build_import {
     my ($self,@tasks)=@_;
     my $parser = $self->{parser} or croak "rig: missing a parser";
-    #my $profile = $self->_has_rigfile_tasks(@tasks) ? $self->parse() : {};
-    my $profile = $parser->parse( $self->{file} ) || {};
+    my $profile = $self->_has_rigfile_tasks( \@tasks) ? $parser->parse( $self->{file} ) : {};
+    #my $profile = $parser->parse( $self->{file} ) || {};
     my $ret = {};
     for my $task_name ( @tasks ) {
         $profile->{$task_name} ||= $self->_load_task_module( $task_name );# if _is_module_task($_);

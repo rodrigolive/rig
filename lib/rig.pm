@@ -241,22 +241,6 @@ it doesn't. This module is about order and parseability.
 Having a structured file written in plain yaml makes it easier for worldly parsers
 to parse the file and understand your configuration.
 
-=head2 Writing your own parser
-
-Although this distribution only comes with a yaml parser for the .perlrig file.
-you can still write your own parser if you like:
-
-   package rig::parser::xml;
-   use base 'rig::parser::base';
-
-   sub parse { return .... } 
-
-   # meanwhile in Gotham City:
-
-   package main;
-   use rig -parser => 'xml';
-   use rig 'fav-in-xml';
-
 =head2 Global Configuration
 
 Use the C<$ENV{PERLRIG_FILE}> variable to tell C<rig> where to find your file.
@@ -283,6 +267,38 @@ to ship them as part of the C<rig::task::> namespace.
 
 This is the recommended way to ship a rig with your distribution. It
 makes your distribution portable, no C<.perlrig> file is required.
+
+=head2 Out-of-the-box rig tasks
+
+This module comes with 2 internal rigs defined:
+
+=over
+
+=item * 
+
+Modern L<rig::task::modern>
+
+=item *
+
+Red L<rig::task::red>
+
+=back
+
+=head2 Writing your own parser
+
+Although this distribution only comes with a yaml parser for the .perlrig file.
+you can still write your own parser if you like:
+
+   package rig::parser::xml;
+   use base 'rig::parser::base';
+
+   sub parse { return .... } 
+
+   # meanwhile in Gotham City:
+
+   package main;
+   use rig -parser => 'xml';
+   use rig 'fav-in-xml';
 
 =head1 CAVEATS
 
