@@ -15,6 +15,7 @@ sub run {
 		next unless exists $data->{$task}->{use};
         for my $module ( @{ $data->{$task}->{use} } ) {
             ref $module eq 'HASH' and $module = (keys %$module)[0];
+            $module =~ s/^\++//g;
             print "Checking $module...";
             my ($name, $version) = split /\s+/, $module;
             eval "require $name";

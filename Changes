@@ -1,3 +1,5 @@
+0.04 Sat Aug  6 21:23:29 CEST 2011
+    BUGFIX: rigup cpan/cpanm does not process modules starting with + 
 0.03 Mon Jun 27 13:31:12 CEST 2011
     * add some standard rigs out-of-the-box: modern, red, green
     * correct execution of :task (skip .perlrig file)
