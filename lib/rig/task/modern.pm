@@ -1,12 +1,12 @@
 package rig::task::modern;
 
 sub rig {
-     return {
-      use => [
-         'strict',
-         { 'warnings'=> [ 'FATAL','all' ] }
-      ]
-   };
+    return {
+        use => [
+            'strict',
+            { 'warnings'=> [ 'FATAL','all' ] }
+        ]
+    };
 }
 
 =head1 NAME

@@ -10,16 +10,16 @@ sub get_options {
             $hash{$last_opt} = [] unless ref $hash{$last_opt};
         }
         else {
-			$opt = 	Encode::encode_utf8($opt) if Encode::is_utf8($opt);
-            push @{ $hash{$last_opt} }, $opt; 
+            $opt =     Encode::encode_utf8($opt) if Encode::is_utf8($opt);
+            push @{ $hash{$last_opt} }, $opt;
         }
     }
-	# convert single option => scalar
-	for( keys %hash ) {
-		if( @{ $hash{$_} } == 1 ) {
-			$hash{$_} = $hash{$_}->[0];	
-		}
-	}
+    # convert single option => scalar
+    for( keys %hash ) {
+        if( @{ $hash{$_} } == 1 ) {
+            $hash{$_} = $hash{$_}->[0];
+        }
+    }
     return wantarray ? %hash : \%hash;
 }
 

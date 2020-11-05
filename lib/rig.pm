@@ -93,19 +93,19 @@ Back in your code:
 
 =head1 DESCRIPTION
 
-This module allows you to organize and bundle your favorite modules, thus reducing 
+This module allows you to organize and bundle your favorite modules, thus reducing
 the recurring task of C<use>ing them in your programs, and implicitly requesting
-imports by default. 
+imports by default.
 
 You can rig your bundles in 2 places:
 
 =over
 
-=item * 
+=item *
 
 A file called C<.perlrig> in your home or current working directory.
 
-=item * 
+=item *
 
 Packages undeneath the C<rig::task::<rig_task_name>>, for better portability.
 
@@ -114,10 +114,10 @@ Packages undeneath the C<rig::task::<rig_task_name>>, for better portability.
 =head1 IMPLEMENTATION
 
 This module uses lots of internal C<goto>s to trick modules to think they're being
-loaded by the original caller, and not by C<rig> itself. It also hooks into C<import> to keep 
-modules loading after a C<goto>.  
+loaded by the original caller, and not by C<rig> itself. It also hooks into C<import> to keep
+modules loading after a C<goto>.
 
-Modules that don't have an C<import()> method are instead C<eval>led into the caller's package. 
+Modules that don't have an C<import()> method are instead C<eval>led into the caller's package.
 
 This is somewhat hacky, there are probably better ways of achieving the same results.
 We're open to suggestions on how to make loading modules more generic and effective.
@@ -143,7 +143,7 @@ Just fork me on Github!
    <task>:
       use:
          - <module> [min_version]
-         - +<module> 
+         - +<module>
          - <module>:
             - <export1>
             - <export2>
@@ -156,7 +156,7 @@ Just fork me on Github!
 
 =item *
 
-Lists modules to be C<use>d. 
+Lists modules to be C<use>d.
 
 =item *
 
@@ -175,7 +175,7 @@ it to be loaded using the C<eval> method, as such:
 
     eval "package <your_package>; use <module>;"
 
-This may be useful to workaround issues with using import when 
+This may be useful to workaround issues with using import when
 none is available and C<rig> fails to detect a missing import method,
 or things are just not working as expected.
 
@@ -187,7 +187,7 @@ Used to bundle tasks into each other.
 
    modernity:
       use:
-         - strict 
+         - strict
          - warnings
          - feature:
             - say
@@ -236,7 +236,7 @@ file merging should be implemented.
 =head2 Structure
 
 It could have had room to put your funky startup code, but
-it doesn't. This module is about order and parseability. 
+it doesn't. This module is about order and parseability.
 
 Having a structured file written in plain yaml makes it easier for worldly parsers
 to parse the file and understand your configuration.
@@ -247,11 +247,11 @@ Use the C<$ENV{PERLRIG_FILE}> variable to tell C<rig> where to find your file.
 
    $ export PERLRIG_FILE=/etc/myrig
    $ perl foo_that_rigs.pl
-   
+
 =head1 rig::task:: modules
 
 A more distribution-friendly way of wiring up module bundles for your application is
-to ship them as part of the C<rig::task::> namespace. 
+to ship them as part of the C<rig::task::> namespace.
 
    package rig::task::myfav;
 
@@ -274,7 +274,7 @@ This module comes with 2 internal rigs defined:
 
 =over
 
-=item * 
+=item *
 
 Modern L<rig::task::modern>
 
@@ -292,7 +292,7 @@ you can still write your own parser if you like:
    package rig::parser::xml;
    use base 'rig::parser::base';
 
-   sub parse { return .... } 
+   sub parse { return .... }
 
    # meanwhile in Gotham City:
 
@@ -315,7 +315,7 @@ won't look for any more files, as its structure will remain loaded in memory.
 =head2 Ordered Load
 
 As of right now, module loading order tends to get messed up easily. This
-will probably be fixed, as the author's intention is to load modules 
+will probably be fixed, as the author's intention is to load modules
 following the order set by the user in the C<.perlrig> and C<use rig>
 statements.
 
@@ -323,9 +323,9 @@ statements.
 
 The authors feel that C<rig> is a short name that is good for one-liners.
 It's lowercase because we feel it's a pragma-like module that augments
-the functionality of C<use>. 
+the functionality of C<use>.
 But C<rig> is a unique enough name as to avoid
-clashing with future Perl pragmas. 
+clashing with future Perl pragmas.
 
 We're sorry if it hurts anyone's lowercase sensibility.
 
@@ -333,7 +333,7 @@ We're sorry if it hurts anyone's lowercase sensibility.
 
 =over
 
-=item * 
+=item *
 
 Create a class to hold the perlrig definition.
 
@@ -341,31 +341,31 @@ Create a class to hold the perlrig definition.
 
 Use L<Config::Any> or similar for more agnostic and advanced file loading.
 
-=item * 
+=item *
 
 Straighten out and optimize internals.
 
-=item * 
+=item *
 
 Test many more modules for edge cases.
 
-=item * 
+=item *
 
 More verbs besides C<use> and C<also>, such as require, etc.
 
-=item * 
+=item *
 
 A cookbook of some sort, with everyday examples.
 
-=item * 
+=item *
 
 More tests.
 
-=item * 
+=item *
 
 Fix load sequence.
 
-=back 
+=back
 
 =head1 SEE ALSO
 
@@ -374,5 +374,3 @@ L<Toolkit> - uses filters and C<AUTOLOAD> to accomplish its import magic.
 L<ToolSet> - employs C<use base> and C<package ...; eval ...>.
 
 =cut
-
-
